@@ -11,7 +11,7 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 
 @SpringBootApplication
 public class BoardV2Application {
-
+//stage2
 	@Autowired
 	private BoardRepository boardRepository;
 
