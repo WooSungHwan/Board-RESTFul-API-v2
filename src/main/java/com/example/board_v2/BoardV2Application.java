@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class BoardV2Application {
 
 	public static void main(String[] args) {
-		System.out.println(1);
 		SpringApplication.run(BoardV2Application.class, args);
 	}
 
