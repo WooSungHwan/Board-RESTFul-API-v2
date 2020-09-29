@@ -22,12 +22,12 @@ public class BoardService {
     }
 
     public Board getBoard(Long seq) throws Exception {
-        return boardRepository.findById(seq).orElseGet(() -> null);
+        return getBoardOrElseThrow(seq);
     }
 
     @Transactional
     public Board editBoard(EditBoardParam param, Long seq) throws Exception {
-        Board board = boardRepository.findById(seq).orElseGet(() -> null);
+        Board board = getBoardOrElseThrow(seq);
         if(board != null) {
             board.setContent(param.getContent());
         }
@@ -41,11 +41,17 @@ public class BoardService {
 
     @Transactional
     public boolean deleteBoard(Long seq) throws Exception {
-        Board board = boardRepository.findById(seq).orElse(null);
+        Board board = getBoardOrElseThrow(seq);
         if (board == null) {
             return false;
         }
         boardRepository.delete(board);
         return true;
+    }
+
+    private Board getBoardOrElseThrow(Long seq) {
+        return boardRepository
+                .findById(seq)
+                .orElseThrow(() -> new RuntimeException("해당 게시글이 존재하지 않습니다."));
     }
 }

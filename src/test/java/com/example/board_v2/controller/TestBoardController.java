@@ -129,6 +129,20 @@ public class TestBoardController {
                 .andExpect(status().isNotFound());
     }
 
+    @Order(7)
+    @DisplayName("게시글 수정(content length over)")
+    @Test
+    public void editBoard_ContentLengthError() throws Exception {
+        EditBoardParam param = EditBoardParam.builder().content("아").build();
+
+        mockMvc.perform(put(BASE_URL + "/{seq}", 1L)
+                .contentType(MediaTypes.HAL_JSON_VALUE)
+                .accept(MediaTypes.HAL_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(param)))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
     @Order(10)
     @DisplayName("게시글 삭제")
     @Test

@@ -9,6 +9,7 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -23,7 +24,7 @@ public class BoardController {
     private final BoardService boardService;
 
     @PostMapping(produces = MediaTypes.HAL_JSON_VALUE, consumes = MediaTypes.HAL_JSON_VALUE)
-    public ResponseEntity addBoard(@RequestBody AddBoardParam param) throws Exception {
+    public ResponseEntity addBoard(@RequestBody @Validated AddBoardParam param) throws Exception {
         Board board = boardService.addBoard(param);
         URI createdURI = linkTo(BoardController.class).slash(board.getSeq()).toUri();
         return ResponseEntity.created(createdURI).body(board);
@@ -45,10 +46,10 @@ public class BoardController {
     }
 
     @PutMapping(value = "/{seq}", produces = MediaTypes.HAL_JSON_VALUE, consumes = MediaTypes.HAL_JSON_VALUE)
-    public ResponseEntity editBoard(@PathVariable("seq") Long seq, @RequestBody EditBoardParam param) throws Exception {
+    public ResponseEntity editBoard(@PathVariable("seq") Long seq, @RequestBody @Validated EditBoardParam param) throws Exception {
         Board board = boardService.editBoard(param, seq);
         if (board == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+            return ResponseEntity.notFound().build();
         } else {
             return ResponseEntity.ok(board);
         }
