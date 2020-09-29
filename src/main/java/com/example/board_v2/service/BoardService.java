@@ -51,8 +51,8 @@ public class BoardService {
     }
 
     private Board getBoardOrElseThrow(Long seq) {
-        return boardRepository
-                .findById(seq)
+        //RuntimeException -> EntityNotFoundException으로 변경
+        return boardRepository.findById(seq)
                 .orElseThrow(() -> new EntityNotFoundException("해당 게시글이 존재하지 않습니다."));
     }
 }
