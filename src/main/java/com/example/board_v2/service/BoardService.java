@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Transactional(readOnly = true)
@@ -52,6 +53,6 @@ public class BoardService {
     private Board getBoardOrElseThrow(Long seq) {
         return boardRepository
                 .findById(seq)
-                .orElseThrow(() -> new RuntimeException("해당 게시글이 존재하지 않습니다."));
+                .orElseThrow(() -> new EntityNotFoundException("해당 게시글이 존재하지 않습니다."));
     }
 }

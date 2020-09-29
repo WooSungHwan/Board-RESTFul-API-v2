@@ -59,6 +59,7 @@ public class TestBoardController {
                                     .andDo(print())
                                     .andExpect(status().isCreated())
                                     .andReturn();
+
         Board board = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Board.class);
         Assertions.assertEquals(board.getContent(), param.getContent());
         Assertions.assertEquals(board.getUsername(), param.getUsername());
