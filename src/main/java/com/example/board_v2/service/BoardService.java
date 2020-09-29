@@ -4,12 +4,14 @@ import com.example.board_v2.entity.Board;
 import com.example.board_v2.param.AddBoardParam;
 import com.example.board_v2.param.EditBoardParam;
 import com.example.board_v2.repository.BoardRepository;
+import com.example.board_v2.result.BoardResult;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -18,26 +20,30 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
 
-    public List<Board> getBoardList() throws Exception {
-        return boardRepository.findAll();
+    public List<BoardResult> getBoardList() throws Exception {
+        return boardRepository.findAll()
+                              .stream()
+                              .map(BoardResult::new)
+                              .collect(Collectors.toList());
     }
 
-    public Board getBoard(Long seq) throws Exception {
-        return getBoardOrElseThrow(seq);
+    public BoardResult getBoard(Long seq) throws Exception {
+        return new BoardResult(getBoardOrElseThrow(seq));
     }
 
     @Transactional
-    public Board editBoard(EditBoardParam param, Long seq) throws Exception {
+    public BoardResult editBoard(EditBoardParam param, Long seq) throws Exception {
         Board board = getBoardOrElseThrow(seq);
         if(board != null) {
             board.setContent(param.getContent());
         }
-        return board;
+        return new BoardResult(board);
     }
 
     @Transactional
-    public Board addBoard(AddBoardParam param) throws Exception {
-        return boardRepository.save(new Board(param));
+    public BoardResult addBoard(AddBoardParam param) throws Exception {
+        Board entity = new Board(param);
+        return new BoardResult(boardRepository.save(entity));
     }
 
     @Transactional

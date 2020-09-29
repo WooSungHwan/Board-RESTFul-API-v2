@@ -4,6 +4,7 @@ import com.example.board_v2.entity.Board;
 import com.example.board_v2.param.AddBoardParam;
 import com.example.board_v2.param.EditBoardParam;
 import com.example.board_v2.repository.BoardRepository;
+import com.example.board_v2.result.BoardResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -60,10 +61,11 @@ public class TestBoardController {
                                     .andExpect(status().isCreated())
                                     .andReturn();
 
-        Board board = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Board.class);
-        Assertions.assertEquals(board.getContent(), param.getContent());
-        Assertions.assertEquals(board.getUsername(), param.getUsername());
-        Board savedBoard = boardRepository.findById(board.getSeq()).orElse(null);
+        BoardResult boardResult = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), BoardResult.class);
+        Assertions.assertEquals(boardResult.getContent(), param.getContent());
+        Assertions.assertEquals(boardResult.getUsername(), param.getUsername());
+
+        Board savedBoard = boardRepository.findById(boardResult.getSeq()).orElse(null);
         Assertions.assertEquals(savedBoard.getContent(), param.getContent());
         Assertions.assertEquals(savedBoard.getUsername(), param.getUsername());
     }
@@ -111,8 +113,8 @@ public class TestBoardController {
                                     .andDo(print())
                                     .andExpect(status().isOk())
                                     .andReturn();
-        Board board = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), Board.class);
-        Assertions.assertEquals(param.getContent(), board.getContent());
+        BoardResult boardResult = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), BoardResult.class);
+        Assertions.assertEquals(param.getContent(), boardResult.getContent());
         Assertions.assertEquals(param.getContent(), boardRepository.findById(1L).orElse(null).getContent());
     }
 
@@ -165,5 +167,4 @@ public class TestBoardController {
                 .andDo(print())
                 .andExpect(status().isNotFound());
     }
-
 }
