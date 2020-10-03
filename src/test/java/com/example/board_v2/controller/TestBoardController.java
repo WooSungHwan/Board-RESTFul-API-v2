@@ -49,7 +49,7 @@ public class TestBoardController {
     }
 
     @Order(1)
-    @DisplayName("게시글 등록")
+    @DisplayName("게시글 등록(OK)")
     @Test
     public void addBoard() throws Exception {
         AddBoardParam param = AddBoardParam.builder().content("게시글을 등록합니다.").username("유저1").build();
@@ -71,7 +71,7 @@ public class TestBoardController {
     }
 
     @Order(2)
-    @DisplayName("게시글 리스트 조회")
+    @DisplayName("게시글 리스트 조회(OK)")
     @Test
     public void getBoardList() throws Exception {
         mockMvc.perform(get(BASE_URL)
@@ -133,11 +133,40 @@ public class TestBoardController {
     }
 
     @Order(7)
-    @DisplayName("게시글 수정(content length over)")
+    @DisplayName("게시글 수정(content 길이 300 초과)")
     @Test
-    public void editBoard_ContentLengthError() throws Exception {
-        EditBoardParam param = EditBoardParam.builder().content("아").build();
+    public void editBoard_ContentLengthOver() throws Exception {
+        StringBuilder sb = new StringBuilder();
+        for(int i =0; i<301; i++) {
+            sb.append("a");
+        }
+        EditBoardParam param = EditBoardParam.builder().content(sb.toString()).build();
+        mockMvc.perform(put(BASE_URL + "/{seq}", 1L)
+                .contentType(MediaTypes.HAL_JSON_VALUE)
+                .accept(MediaTypes.HAL_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(param)))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
 
+    @Order(7)
+    @DisplayName("게시글 수정(content 길이 2 미만)")
+    @Test
+    public void editBoard_ContentLengthUnder() throws Exception {
+        EditBoardParam param = EditBoardParam.builder().content("아").build();
+        mockMvc.perform(put(BASE_URL + "/{seq}", 1L)
+                .contentType(MediaTypes.HAL_JSON_VALUE)
+                .accept(MediaTypes.HAL_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(param)))
+                .andDo(print())
+                .andExpect(status().isBadRequest());
+    }
+
+    @Order(7)
+    @DisplayName("게시글 수정(content null)")
+    @Test
+    public void editBoard_ContentNull() throws Exception {
+        EditBoardParam param = EditBoardParam.builder().content(null).build();
         mockMvc.perform(put(BASE_URL + "/{seq}", 1L)
                 .contentType(MediaTypes.HAL_JSON_VALUE)
                 .accept(MediaTypes.HAL_JSON_VALUE)
@@ -147,7 +176,7 @@ public class TestBoardController {
     }
 
     @Order(10)
-    @DisplayName("게시글 삭제")
+    @DisplayName("게시글 삭제(OK)")
     @Test
     public void deleteBoard() throws Exception {
         mockMvc.perform(delete(BASE_URL + "/{seq}", 1L)
