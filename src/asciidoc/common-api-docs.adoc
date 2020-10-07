@@ -1,0 +1,95 @@
+[[index]]
+[[common]]
+== 공통 사항
+
+API 에 관계없이 아래 사항을 지켜주셔야 합니다.
+
+=== HTTP 응답 상태
+[cols="1, 1"]
+|===
+| 코드 | 설명
+
+| 200
+| 성공
+
+| 201
+| 생성
+
+| 400
+| 실패
+
+| 404
+| 조회실패
+
+
+|===
+
+=== HTTP 응답 해더
+|===
+| 이름 | 설명
+
+| -
+| -
+
+|===
+
+=== HTTP 응답본문
+
+==== 성공 형식
+
+[source,json]
+----
+{
+  "seq":11,
+  "username":"유저1",
+  "content":"게시글을 등록합니다.",
+  "createdAt":"2020-10-07 06:12:19",
+  "_links":{
+    "self":{
+      "href":"http://localhost:8080/boards/11"
+    },
+    "get":{
+      "href":"http://localhost:8080/boards/11"
+    },
+    "delete":{
+      "href":"http://localhost:8080/boards/11"
+    },
+    "edit":{
+      "href":"http://localhost:8080/boards/11"
+    }
+  }
+}
+----
+
+==== 실패 형식
+
+[source,json]
+----
+{
+  "code" : 400,
+  "message" : "에러메시지",
+  "responseTime" : "2019-09-01 14:14:14"
+}
+----
+
+==== 형식 설명
+[cols="2,3,5"]
+|===
+| 필드 | 설명 | 남긴말
+
+| `code`
+| 상태 코드
+| 성공시 200, 실패시 상황별 코드 반환
+
+| `message`
+| 응답 메세지
+| 성공시 성공하였습니다, 실패시 상황별 메세지 반환
+
+| `result`
+| 성공시 반환될 데이터
+| null, json, json array 반환
+
+| `responseTime`
+| 응답시간
+| yyyy-MM-dd HH:mm:ss 형식 반환
+|===

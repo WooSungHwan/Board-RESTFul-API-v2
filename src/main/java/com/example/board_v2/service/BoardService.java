@@ -6,6 +6,8 @@ import com.example.board_v2.param.EditBoardParam;
 import com.example.board_v2.repository.BoardRepository;
 import com.example.board_v2.result.BoardResult;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,11 +22,11 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
 
-    public List<BoardResult> getBoardList() throws Exception {
-        return boardRepository.findAll()
-                              .stream()
-                              .map(BoardResult::new)
-                              .collect(Collectors.toList());
+    public List<BoardResult> getBoardList(Pageable pageable) throws Exception {
+        return boardRepository.findAll(pageable)
+                .get()
+                .map(BoardResult::new)
+                .collect(Collectors.toList());
     }
 
     public BoardResult getBoard(Long seq) throws Exception {
